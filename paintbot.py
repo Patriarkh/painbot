@@ -70,7 +70,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     await update.message.reply_text(
-        "Привет! Я бот для генерации раскрасок. Нажмите на кнопку ниже, чтобы получить раскраску!",
+        "Привет! Я бот для генерации раскрасок. При первом запуске дарю тебе 10 бесплатных генераций. Нажмите на кнопку ниже, чтобы получить раскраску!",
         reply_markup=reply_markup
     )
   
