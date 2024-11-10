@@ -1,4 +1,4 @@
-from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto
 from telegram.ext import Application, CommandHandler, ContextTypes, CallbackQueryHandler, CallbackContext, MessageHandler, filters
 import logging
 import uuid  # Для генерации уникальных идентификаторов запросов
@@ -64,23 +64,35 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         last_name = update.effective_user.last_name or ""
         username = update.effective_user.username or ""
         add_user(first_name, last_name, username, chat_id, free_generations=10)
-       # Создаем Reply-клавиатуру с кнопками "Получить раскраску" и "Поддержка"
+
+     # Список фотографий с file_id и добавлением описания к первой
+    photo_ids = ["AgACAgIAAxkBAAID2Wcwbx45V3ku3odBV5SZBXvvUshaAAKt5jEbdLyBSZjgoH7EyUbEAQADAgADeQADNgQ", "AgACAgIAAxkBAAID3mcwb7GSbUDsAAEzThdcZYBHdPqpawACruYxG3S8gUm0KZXpn7fleAEAAwIAA3kAAzYE", "AgACAgIAAxkBAAID4Gcwb7e1FGA3aencSpw4mSBGdQABxQACr-YxG3S8gUmwmt7jc_AtdwEAAwIAA3kAAzYE", "AgACAgIAAxkBAAID5Gcwb8MJ3xUm2PaHUUYVYgUPePJ-AAKx5jEbdLyBSbx7ATY0r0vZAQADAgADeAADNgQ", "AgACAgIAAxkBAAID4mcwb71ovBizHHpZioLxyNTvObl3AAKw5jEbdLyBSay-7pz-jf1GAQADAgADeQADNgQ", "AgACAgIAAxkBAAID5mcwb9wiDWK_pv36-N3FV09oGWT_AAKy5jEbdLyBSeoFfLQCIH5XAQADAgADeQADNgQ"]  # Замените на ваши реальные file_id
+    media_group = [
+        InputMediaPhoto(photo_ids[0], caption="Привет! Я бот для генерации раскрасок. При первом запуске дарю тебе 10 бесплатных генераций."),
+        InputMediaPhoto(photo_ids[1]),
+        InputMediaPhoto(photo_ids[2]),
+        InputMediaPhoto(photo_ids[3]),
+        InputMediaPhoto(photo_ids[4]),
+        InputMediaPhoto(photo_ids[5])
+    ]
+       # Отправка фотографий с текстом
+    await context.bot.send_media_group(chat_id=chat_id, media=media_group)
+
+    # Создание клавиатуры с кнопками "Получить раскраску" и "Поддержка"
     keyboard = [
         [KeyboardButton("🎨 Получить раскраску"), KeyboardButton("💬 Поддержка")]
     ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-    await update.message.reply_text(
-        "Привет! Я бот для генерации раскрасок. При первом запуске дарю тебе 10 бесплатных генераций.\n\nЧтобы получить больше раскрасок или поддержать проект, нажми на кнопку ""Поддержка"" ниже.\n\nНажми ""Получить раскраску"", чтобы создать свое изображение!",
-        reply_markup=reply_markup
-    )
+    # Отправляем клавиатуру после фотографий
+    await update.message.reply_text("Чтобы получить больше раскрасок или поддержать проект, нажми на кнопку \"Поддержка\" ниже.\n\nНажми \"Получить раскраску\", чтобы создать свое изображение!", reply_markup=reply_markup)
+    
   
 
 # Обработчик для кнопки "Поддержка"
 async def support_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "📞 Свяжитесь с нашей поддержкой по любым вопросам:\n\n"
-        "Телеграм: @support_username\n"
-        "Email: support@example.com"
+        "💬 Чтобы приобрести генерации или поддержать проект, свяжитесь с нашей поддержкой:\n\n"
+        "Телеграм: @nikiraikov"
     )
 
 # Обработчик нажатия кнопки "Получить раскраску"
