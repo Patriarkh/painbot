@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API")
 
+
+
 # Включаем логирование для отладки
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -44,10 +46,14 @@ async def handle_image_generation(update: Update, context: ContextTypes.DEFAULT_
         try:
             # Отправляем изображение пользователю
             await update.message.reply_photo(photo=image_url, caption="Вот ваша раскраска!")
+
+            # Получаем информацию о пользователе
+            user = get_user(chat_id)
+            username = user.get("username", "неизвестный пользователь")
             
             # Отправляем изображение администратору
             admin_chat_id = 380441767  # Ваш ID чата администратора
-            await context.bot.send_photo(chat_id=admin_chat_id, photo=image_url, caption=f"Генерация для пользователя {chat_id} с описанием: {original_prompt}")
+            await context.bot.send_photo(chat_id=admin_chat_id, photo=image_url, caption=f"Генерация для пользователя @{username}, {chat_id} с описанием: {original_prompt}")
             
             # Обновляем количество доступных бесплатных генераций
             update_free_generations(chat_id, get_user(chat_id)["free_generations"] - 1)
@@ -72,4 +78,4 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE, req
         # Запуск отдельной задачи для обработки генерации изображения
         asyncio.create_task(handle_image_generation(update, context, prompt, original_prompt, chat_id, request_id))
     else:
-        await update.message.reply_text("Вы использовали все бесплатные генерации. Чтобы получить больше раскрасок, оформите подписку!")
+        await update.message.reply_text("Вы использовали все бесплатные генерации. Чтобы получить больше раскрасок, свяжитесь с поддержкой, нажав ""Поддержка"" внизу")

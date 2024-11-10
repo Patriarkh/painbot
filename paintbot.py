@@ -70,7 +70,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     await update.message.reply_text(
-        "Привет! Я бот для генерации раскрасок. При первом запуске дарю тебе 10 бесплатных генераций. Нажмите на кнопку ниже, чтобы получить раскраску!",
+        "Привет! Я бот для генерации раскрасок. При первом запуске дарю тебе 10 бесплатных генераций.\n\nЧтобы получить больше раскрасок или поддержать проект, нажми на кнопку ""Поддержка"" ниже.\n\nНажми ""Получить раскраску"", чтобы создать свое изображение!",
         reply_markup=reply_markup
     )
   
@@ -98,7 +98,7 @@ async def handle_reply_button(update: Update, context: ContextTypes.DEFAULT_TYPE
         context.user_data['waiting_for_description'] = True
     else:
         await update.message.reply_text(
-            "Вы использовали все бесплатные генерации. Чтобы получить больше раскрасок, оформите подписку!"
+            "Вы использовали все бесплатные генерации. Чтобы получить больше раскрасок, свяжитесь с поддержкой, нажав ""Поддержка"" внизу"
         )
 
 
@@ -120,14 +120,9 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.info(f"[{request_id}] Генерация изображения запущена для chat_id: {chat_id}")
     else:
         await update.message.reply_text(
-            "Ваши бесплатные генерации закончились. Пожалуйста, приобретите подписку для получения дополнительных раскрасок."
+            "Ваши бесплатные генерации закончились. Чтобы получить больше раскрасок, свяжитесь с поддержкой, нажав ""Поддержка"" внизу"
         )
 
-# Обработчик нажатия кнопки "Подписаться"
-async def subscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = update.callback_query
-    await query.answer()
-    await query.message.reply_text("Чтобы подписаться, перейдите по ссылке [ссылка на оплату]")
 
 
 
